@@ -5,9 +5,14 @@ pre.textStyle{
 }
 
 body{
-	background: linear-gradient(to bottom right,green 5%,  white 90%);
+/* 	background: linear-gradient(to bottom right,green 5%,  white 90%); */
 }
-
+#headline{
+	height: 55px;
+	background-color: #77ccdd;
+	width: 100%;
+	margin-top: 0px;
+}
 #myreply{
 	width: 565px;
 	font-size:18px;	
@@ -24,11 +29,11 @@ body{
 	background-color: white;
 	border-width: 5px;
 	border-style:solid;
-	border-color:#008080;
-	border-radius: 25px;
+	border-color:#77ccdd;
+	border-radius: 15px;
 }
 #kechengtiwen{
-	color: 00FF00;
+	color: #80ffff;
 }
 #titlediv{
 	background-color: white;
@@ -48,6 +53,7 @@ body{
 	font-size: 18px;
 	font-style:normal; 
 	border-radius:25px;
+	border-color: #80ffff;
 }
 b.aut{
 	color: blue;
@@ -102,7 +108,7 @@ li{
 	}
 #comment{
 	border-style: solid;
-	border-color:green;
+	border-color:#b9dcff;
 	border-radius:25px;
 	padding: 10px;
 }
