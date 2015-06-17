@@ -16,6 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+*@author lincanye
+*/
 public class ShowChapters extends Activity {
     private String strToParse;  // 需要解析出章节信息的字符串
     private ListView lv;
