@@ -7,29 +7,22 @@
         <link rel="stylesheet" href="css/supersized.css">
         <link rel="stylesheet" href="css/style.css">
     </head>
-    <script src="jquery.min.js"></script>
-    <script src="supersized.3.2.7.min.js"></script>
-    <script src="supersized-init.js"></script>
-    <script src="jquery.cookie.js"></script>
-    <script src="login.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/supersized.3.2.7.min.js"></script>
+    <script src="js/supersized-init.js"></script>
+    <script src="js/login.js"></script>
     <body>
 	<br/>
-	<p style="float:left;font-style:oblique;font-size:58px;color:blue">课程信息平台</p>
         <div class="page-container">
             <h1 id="head">登录</h1>
-            <div id="inputArea">
-				<table style="margin-left:40%">
-                 <tr><td><input value="12330285" name="username" class="username" id="username" placeholder="用户名" type="text"></td></tr>
-				
-                <tr><td><input name="password" id="password" class="password" placeholder="密码" type="password"></td></tr>
-
-                <tr><td><input style="display: none" name="repassword" id="repassword" class="password" placeholder="确认密码" type="password"></td></tr>
-
-                <tr><td><p style="color: red; display:none;border: none;margin-top: 5px" id = "tip">账户名或者密码错</p></td></tr>
-                <tr><td><button id="sure" type="login">登陆</button><p></p></td></tr>
-				<tr><td><p style="float:right;margin-top: 10px;" id="register" >注册</p></td></tr>
-				</table>
-            </div>
+            <form action="" method="post">
+                <input type="text" name="username" class="username" id="username" placeholder="用户名">
+                <input type="password" name="password" id="password" class="password" placeholder="密码">
+                <input type="password" style="display: none" name="repassword" id="repassword" class="password" placeholder="确认密码">
+                <p style="color: red; display:none;border: none;margin-top: 5px" id = "tip">账户名或者密码错</p>
+                <button type="submit" id="sure">登陆</button>
+				<p style="float:right;margin-top: 10px;" id="register" >注册</p>
+            </form>
         </div>
     </body>
 </html>
