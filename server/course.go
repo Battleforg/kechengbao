@@ -16,7 +16,7 @@ import (
 //http.Error(w, "ss", 200)
 
 type Chapter struct {
-	No    uint
+	No    string
 	Title string
 	Intro string
 	Text  string //optional
@@ -24,14 +24,14 @@ type Chapter struct {
 }
 
 type ClassHour struct {
-	Day        uint8
-	StartClass uint8
-	EndClass   uint8
+	Day        string
+	StartClass string
+	EndClass   string
 }
 
 type CourseHour struct {
-	StartWeek  uint8
-	EntWeek    uint8
+	StartWeek  string
+	EntWeek    string
 	ClassHours []ClassHour
 }
 

@@ -12,9 +12,9 @@ import (
 type User struct {
 	UserID   string
 	Password string
-	//	Session  string
-	//	Expire   int64
-	//	Role     string //Admin, User(TA, student...)
+	//Session  string
+	//Expire   int64
+	//Role     string //Admin, User(TA, student...)
 }
 
 type UserDB struct {

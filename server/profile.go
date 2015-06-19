@@ -110,3 +110,27 @@ func CreateProfile(v Profile) error {
 	}
 	return c.Insert(v)
 }
+
+func AppendCourse(uid, cid string) error {
+	session, err := mgo.Dial(COURSE_HOST)
+	if err != nil {
+		return err
+	}
+	defer session.Close()
+	session.SetMode(mgo.Monotonic, true)
+	c := session.DB(DATABASE).C(PROFILE)
+	err = c.Update(bson.M{"userid": uid}, bson.M{"$push": bson.M{"courses": cid}})
+	return err
+}
+
+func RemoveCourse(uid, cid string) error {
+	session, err := mgo.Dial(COURSE_HOST)
+	if err != nil {
+		return err
+	}
+	defer session.Close()
+	session.SetMode(mgo.Monotonic, true)
+	c := session.DB(DATABASE).C(PROFILE)
+	err = c.Update(bson.M{"userid": uid}, bson.M{"$pull": bson.M{"courses": cid}})
+	return err
+}

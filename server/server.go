@@ -71,9 +71,6 @@ func apiHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("New connection from ", r.URL)
 	r.ParseForm()
 
-	//Auth from
-
-	//===========================================================
 	uid := r.FormValue("UserID")
 	passwd := r.FormValue("Password")
 	action := r.FormValue("Action")
@@ -81,7 +78,6 @@ func apiHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(FORM_INVALID)
 		return
 	}
-	//===========================================================
 
 	cid := r.FormValue("CourseID")
 
@@ -89,6 +85,9 @@ func apiHandler(w http.ResponseWriter, r *http.Request) {
 		if db.CheckUserExist(uid) {
 			w.WriteHeader(USER_EXISTED)
 		} else {
+			var t Profile
+			t.UserID = uid
+			CreateProfile(t)
 			db.Insert(uid, passwd)
 			w.WriteHeader(SUCCESS)
 		}
@@ -119,9 +118,15 @@ func apiHandler(w http.ResponseWriter, r *http.Request) {
 		HTTPHandleError(w, err, []byte(p))
 	case "LEAVE":
 		err := RemoveUser(cid, uid)
+		if err == nil {
+			err = RemoveCourse(uid, cid)
+		}
 		HTTPHandleError(w, err, nil)
 	case "JOIN":
 		err := AppendAs(cid, uid, "students")
+		if err == nil {
+			err = AppendCourse(uid, cid)
+		}
 		HTTPHandleError(w, err, nil)
 	case "ACCEPT":
 	case "KICK":
@@ -149,10 +154,6 @@ func apiHandler(w http.ResponseWriter, r *http.Request) {
 		err = AppendMessage(cid+"-"+t, string(b))
 		HTTPHandleError(w, err, nil)
 	case "CREATE":
-		if uid != "2031" {
-			w.WriteHeader(NO_PRIVILEGE)
-			return
-		}
 		var t Course
 		json.Unmarshal([]byte(r.FormValue("CourseInfo")), &t)
 		err := CreateCourse(t)
@@ -168,6 +169,7 @@ func apiHandler(w http.ResponseWriter, r *http.Request) {
 		HTTPHandleError(w, err, []byte(p))
 	case "LISTQ":
 		p, err := FetchQuestion(uid, cid)
+		log.Println(p)
 		HTTPHandleError(w, err, []byte(p))
 	case "ASK":
 		var q Question
