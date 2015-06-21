@@ -2,23 +2,22 @@ var _auth;
 var _courseID;
 var TA_profile;
 var TA_manageList;
-var TA_manageListDetail;
+var TA_manageListDetail=[];
+var add = ""
 
 $(document).ready(function(){
 	var userID = $.cookie("UserID");
 	var password = $.cookie("Password");
 	if (userID == null || password == null) {
-    	//$(window.location).attr('href', 'login.html');
-    	userID = "12330285";
-    	password = "12330";
+    	$(window.location).attr('href', 'login.html');
 	}
 	_auth = {"UserID": userID, "Password": password};
 	$.ajax(
 		{
-			url: 	 "/api",
-			type: 	 "PROFILE",
+			url: 	 add + "/api",
+			type: 	 "POST",
 			data: 	 {
-				"Action": 	  "POST",
+				"Action": 	  "PROFILE",
 				"UserID":     _auth["UserID"],
 				"Password":   _auth["Password"]
 			},
@@ -26,353 +25,43 @@ $(document).ready(function(){
 			success:  function(result) {
 				TA_profile = result;
 				TA_manageList = TA_profile.Courses;
+    			setEditPro(TA_profile);
+				$("#userID").text(TA_profile.Info.NickName);
+				staticBind();
 				if (TA_manageList.length == 0) {
 					// 提示注册课程
+					$("#newCourse").modal('show');
 				} else {
 					_courseID = TA_manageList[0];
-					mainPro();
+					$.cookie("CourseID", _courseID);
+					initHTML();
+					queryData();
 				}
 			},
 			error: function() {
-				alert("请重新登录");
-				_courseID = "00000001";
-				TA_profile = {
-					"UserID" : "12330285" ,
-					"Courses" : ["00000001"] ,
-					"Id" : {
-						"WorkID" : "123302853" ,
-						"CardID" : "370682 xxxx " ,
-						"Email" : " kassian@123 . com" ,
-						"Phone" : "118012"
-					} ,
-					"Education" : {
-						"University" : "" ,
-						"School" : "" ,
-						"Major" : "" ,
-						"Level" : "" ,
-						"StartYear" : "" ,
-						"EndYear" : ""
-					} ,
-					"Info" : {
-						"NickName" : "sjc" ,
-						"Name" : "" ,
-						"Education" : [ ]
-					}
-				};
-				TA_manageList = TA_profile.Courses;
-				mainPro();
+    			$(window.location).attr('href', 'login.html');
 			}
 		}
 	);
 });
 
 function mainPro() {
-	addr="/api";
-	alert("hey");
+	addr= add + "/api";
 	initHTML();
-	offlineTest();
-	staticBind();
 	queryData();
-	//setInterval("queryData()",60000);
+	setInterval("queryData()",60000);
 }
 
 
 var recentMessage = [];
 var courseInfo;
 var memberDetail = [];
-var memberList;
-
-function offlineTest() {
-	recentMessage = [
-		{
-			"QuestionNo": "0" ,
-			"Ask": {
-				"UserID": "12330285" ,
-				"Date": "2015−04−26 15:02:54.917107647 +0800 HKT" ,
-				"Text": "hey151515151515 "},
-			"Anwser " : [
-					{
-					"UserID " : "12330285" ,
-					"Date " : "2015−04−26 15:02:54.939743361 +0800 HKT" ,
-					"Text " : "hey ! "
-					},{
-					"UserID " : "12330285" ,
-					"Date " : "2015−04−26 15:02:55.667589685 +0800 HKT" ,
-					"Text " : "hey ! "
-					}
-				]
-		},{
-			"QuestionNo": "1" ,
-			"Ask": {
-				"UserID": "12330285" ,
-				"Date": "2015−04−26 15:02:54.917107647 +0800 HKT" ,
-				"Text": "hey ! "},
-			"Anwser " : [
-					{
-					"UserID " : "12330285" ,
-					"Date " : "2015−04−26 15:02:54.939743361 +0800 HKT" ,
-					"Text " : "hey ! "
-					},{
-					"UserID " : "12330285" ,
-					"Date " : "2015−04−26 15:02:55.667589685 +0800 HKT" ,
-					"Text " : "hey ! "
-					}
-				]
-		},
-		{
-			"QuestionNo": "2" ,
-			"Ask": {
-				"UserID": "12330285" ,
-				"Date": "2015−04−26 15:02:54.917107647 +0800 HKT" ,
-				"Text": "hey ! "},
-			"Anwser " : [
-					{
-					"UserID " : "12330285" ,
-					"Date " : "2015−04−26 15:02:54.939743361 +0800 HKT" ,
-					"Text " : "hey ! "
-					},{
-					"UserID " : "12330285" ,
-					"Date " : "2015−04−26 15:02:55.667589685 +0800 HKT" ,
-					"Text " : "hey ! "
-					}
-				]
-		},{
-			"QuestionNo": "3" ,
-			"Ask": {
-				"UserID": "12330285" ,
-				"Date": "2015−04−26 15:02:54.917107647 +0800 HKT" ,
-				"Text": "hey ! "},
-			"Anwser " : [
-					{
-					"UserID " : "12330285" ,
-					"Date " : "2015−04−26 15:02:54.939743361 +0800 HKT" ,
-					"Text " : "hey ! "
-					},{
-					"UserID " : "12330285" ,
-					"Date " : "2015−04−26 15:02:55.667589685 +0800 HKT" ,
-					"Text " : "hey ! "
-					}
-				]
-		},
-		{
-			"QuestionNo": "0" ,
-			"Ask": {
-				"UserID": "12330285" ,
-				"Date": "2015−04−26 15:02:54.917107647 +0800 HKT" ,
-				"Text": "hey ! "},
-			"Anwser " : [
-					{
-					"UserID " : "12330285" ,
-					"Date " : "2015−04−26 15:02:54.939743361 +0800 HKT" ,
-					"Text " : "hey ! "
-					},{
-					"UserID " : "12330285" ,
-					"Date " : "2015−04−26 15:02:55.667589685 +0800 HKT" ,
-					"Text " : "hey ! "
-					}
-				]
-		},{
-			"QuestionNo": "0" ,
-			"Ask": {
-				"UserID": "12330285" ,
-				"Date": "2015−04−26 15:02:54.917107647 +0800 HKT" ,
-				"Text": "hey ! "},
-			"Anwser " : [
-					{
-					"UserID " : "12330285" ,
-					"Date " : "2015−04−26 15:02:54.939743361 +0800 HKT" ,
-					"Text " : "hey ! "
-					},{
-					"UserID " : "12330285" ,
-					"Date " : "2015−04−26 15:02:55.667589685 +0800 HKT" ,
-					"Text " : "hey ! "
-					}
-				]
-		},
-	];
-	courseInfo = {
-		"CourseID" : "00000001" ,
-		"Name" : "Computer Graphics " ,
-		"Code" : "SE−314",
-		"Term" : "2015S" ,
-		"Room" : "公教B501",
-		"Hour" : {
-			"StartWeek" : 1 ,
-			"EntWeek" : 18 ,
-			"ClassHours" : [
-			//?????
-				{
-				"Day" : 5 ,
-				"StartClass" : 3 ,
-				"EndClass" : 5
-				}
-			]},
-		"Teachers" : ["203124231"] ,
-		"TAs"      : ["11330001" , "11330002"] ,
-		"Students" : ["12330285" , "12330284" , " dongliangshishabi "] ,
-		"Chapters" : [
-			{
-			"No" : 0 ,
-			"Title" : " Intro " ,
-			"Intro" : " Intro to xxx " ,
-			"Text"  : " Hello every body this is our introlesson"
-			} , {
-			"No" : 1 ,
-			"Title" : "OpenGL API" ,
-			"Intro" : " Intro to xxx " ,
-			"Text"  : " Hello every body this is our first lesson"
-			}
-		]
-	};
-	TA_manageListDetail = [
-		{
-			"CourseID" : "00000001" ,
-			"Name" : "Computer Graphics " ,
-			"Code" : "SE−314",
-			"Term" : "2015S" ,
-			"Room" : "公教B501",
-			"Hour" : {
-				"StartWeek" : 1 ,
-				"EntWeek" : 18 ,
-				"ClassHours" : [
-				//?????
-					{
-					"Day" : 5 ,
-					"StartClass" : 3 ,
-					"EndClass" : 5
-					}
-				]},
-			"Teachers" : ["203124231"] ,
-			"TAs"      : ["11330001" , "11330002"] ,
-			"Students" : ["12330285" , "12330284" , " dongliangshishabi "] ,
-			"Chapters" : [
-				{
-				"No" : 0 ,
-				"Title" : " Intro " ,
-				"Intro" : " Intro to xxx " ,
-				"Text"  : " Hello every body this is our introlesson"
-				} , {
-				"No" : 1 ,
-				"Title" : "OpenGL API" ,
-				"Intro" : " Intro to xxx " ,
-				"Text"  : " Hello every body this is our first lesson"
-				}
-			]
-		},
-		{
-		"CourseID" : "00000001" ,
-		"Name" : "Computer Graphics2 " ,
-		"Code" : "SE−314",
-		"Term" : "2015S" ,
-		"Room" : "公教B501",
-		"Hour" : {
-			"StartWeek" : 1 ,
-			"EntWeek" : 18 ,
-			"ClassHours" : [
-			//?????
-				{
-				"Day" : 5 ,
-				"StartClass" : 3 ,
-				"EndClass" : 5
-				}
-			]},
-		"Teachers" : ["203124231"] ,
-		"TAs"      : ["11330001" , "11330002"] ,
-		"Students" : ["12330285" , "12330284" , " dongliangshishabi "] ,
-		"Chapters" : [
-			{
-			"No" : 0 ,
-			"Title" : " Intro " ,
-			"Intro" : " Intro to xxx " ,
-			"Text"  : " Hello every body this is our introlesson"
-			} , {
-			"No" : 1 ,
-			"Title" : "OpenGL API" ,
-			"Intro" : " Intro to xxx " ,
-			"Text"  : " Hello every body this is our first lesson"
-			}
-		]
-		}
-	];
-	memberList = courseInfo.Students;
-	memberDetail = [
-		{
-			"UserID" : "123302851" ,
-			"Courses" : ["00000001"] ,
-			"Id" : {
-				"WorkID" : "123302853" ,
-				"CardID" : "370682 xxxx " ,
-				"Email" : " kassian@123 . com" ,
-				"Phone" : "118012"
-			} ,
-			"Education" : {
-				"University" : "" ,
-				"School" : "" ,
-				"Major" : "" ,
-				"Level" : "" ,
-				"StartYear" : "" ,
-				"EndYear" : ""
-			} ,
-			"Info" : {
-				"NickName" : "sjc" ,
-				"Name" : "" ,
-				"Education" : [ ]
-			}
-		},
-		{
-			"UserID" : "123302852" ,
-			"Courses" : ["00000001"] ,
-			"Id" : {
-				"WorkID" : "123302852" ,
-				"CardID" : "370682 xxxx " ,
-				"Email" : " kassian@123 . com" ,
-				"Phone" : "118012"
-			} ,
-			"Education" : {
-				"University" : "" ,
-				"School" : "" ,
-				"Major" : "" ,
-				"Level" : "" ,
-				"StartYear" : "" ,
-				"EndYear" : ""
-			} ,
-			"Info" : {
-				"NickName" : "sjc" ,
-				"Name" : "" ,
-				"Education" : [ ]
-			}
-		},
-		{
-			"UserID" : "123302853" ,
-			"Courses" : ["00000001"] ,
-			"Id" : {
-				"WorkID" : "123302851" ,
-				"CardID" : "370682 xxxx " ,
-				"Email" : " kassian@123 . com" ,
-				"Phone" : "118012"
-			} ,
-			"Education" : {
-				"University" : "" ,
-				"School" : "" ,
-				"Major" : "" ,
-				"Level" : "" ,
-				"StartYear" : "" ,
-				"EndYear" : ""
-			} ,
-			"Info" : {
-				"NickName" : "sjc" ,
-				"Name" : "" ,
-				"Education" : [ ]
-			}
-		}
-	];
-};
+var memberList = [];
 
 var	recentCount;
 var groupCount;
 
 function initHTML() {
-	$("#userID").text(_auth["userID"]);
 
 ///////////////////////////////////////////////////////////////////////
 
@@ -510,7 +199,7 @@ function staticBind() {
     	$(window.location).attr('href', 'http://www.baidu.com');
     });
     $("#more-news").click(function() {
-    	if (recentCount > 6) {
+    	if (recentCount > 16) {
     		$(this).hide();
    			$("#retract-news").show();
     		$("#redirect-news").show();
@@ -564,17 +253,17 @@ function staticBind() {
 					"Body": 	  $("#mess2send").val()
 				},
 				dataType: "json",
-				success:  function(result) {
+				statusCode: {
+					200: function() {
 					alert("发送成功");
-    				$("#check-recipient").text('发送对象');
-    				recipient = [];
-    				$("#send-message").attr(
-    					"data-content", "请确认接收对象"
-    				);
-				},
-				error:function() {
-					alert("发送失败");
+	    				$("#check-recipient").text('发送对象');
+	    				recipient = [];
+	    				$("#send-message").attr(
+	    					"data-content", "请确认接收对象"
+	    				)
+    				}
 				}
+
 			}
 		);
     });
@@ -589,13 +278,16 @@ function staticBind() {
 
     $("#otherCourseChoose").click(function(){
     	$("#otherCourseList").empty();
-    	for(var i = 0; i < TA_manageListDetail.length; i++) {
+    	for(var i = 0; i < TA_manageList.length; i++) {
     		$("#otherCourseList").append(
     			 "<li class='otherCourse'><b>" + TA_manageListDetail[i].Name + "</b></li>"
     		);
     	}
     	$(".otherCourse").click(function(){
-    		alert($(this).prevAll().length);
+			_courseID = TA_manageList[$(this).prevAll().length];
+			$.cookie("CourseID", _courseID);
+			initHTML();
+			queryData();
     	});
     });
 
@@ -614,8 +306,10 @@ function staticBind() {
 					"Role": 	  ""
 				},
 				dataType: "json",
-				success:  function(result) {
-					alert("把id" + chosen_one + "踢出课程成功");
+				statusCode: {
+					200: function() {
+						alert("把id" + chosen_one + "踢出课程成功");
+					}
 				},
 				error:function() {
 					alert("把id" + chosen_one + "踢出课程失败");
@@ -639,8 +333,10 @@ function staticBind() {
 					"Role": 	  ""
 				},
 				dataType: "json",
-				success:  function(result) {
-					alert("把id" + chosen_one + "提权成功");
+				statusCode: {
+					200: function() {
+						alert("把id" + chosen_one + "提权成功");
+					}
 				},
 				error:function() {
 					alert("把id" + chosen_one + "提权失败");
@@ -681,28 +377,88 @@ function staticBind() {
 		$("#NC-WDay").val("");
 		$("#NC-SCour").val("");
 		$("#NC-ECour").val("");
-		$("#newCourse-done").click(function(){
-	    	var Course = genCourdata();
-			// ajax
-		});
     });
 
     $("#course-info-edit").click(function(){
     	$("#newCourseLabel").text("编辑课程信息");
     	setEditCourse(courseInfo);
-
     });
 
     $("#edit-mem-pro").click(function(){
     	setEditPro(TA_profile);
     });
+
+
+	$("#newCourse-done").click(function(){
+		var flag = false;
+		for (var i = 0; i < memberList.length; i++) {
+			if (memberList[i] == TA_profile.UserID) {
+				flag = true;
+			}
+		}
+		if (flag != true) {
+			memberList.push(TA_profile.UserID);
+		}
+    	var Course = genCourdata();
+		$.ajax(
+		{
+			url: 	 add + "/api",
+			type: 	 "POST",
+			dataType: "json",
+			data: 	 {
+				"Action": 	  "CREATE",
+				"UserID":     _auth["UserID"],
+				"Password":   _auth["Password"],
+				"CourseInfo":   Course
+			},		
+			statusCode: {
+				200: function() {
+					courseInfo = $.parseJSON(Course);
+					setEditCourse(courseInfo);
+					if (courseInfo.CourseID != _courseID) {
+						TA_manageList.push(courseInfo.CourseID);
+						$("#editPro-done").trigger("click");						
+						_courseID = TA_manageList[0];
+						$.cookie("CourseID", _courseID);
+						mainPro();
+					}
+				}
+			}
+		}
+		);
+	});
+	
+	$("#editPro-done").click(function(){
+    	var profile = genTAProfile();
+		$.ajax(
+		{
+			url: 	 add + "/api",
+			type: 	 "POST",
+			dataType: "json",
+			data: 	 {
+				"Action": 	  "UPDATE_PROFILE",
+				"UserID":     _auth["UserID"],
+				"Password":   _auth["Password"],
+				"Profile":   profile
+			},		
+			statusCode: {
+				200: function() {
+					TA_profile = $.parseJSON(profile);
+					setEditPro(TA_profile);
+					queryData();
+				}
+			}
+		}
+		);
+	});
 }
 
 function setEditPro(profile) {
+	$("#userID").text(profile.Info.NickName);
 	$("#TA-ID").val(profile.UserID);
 	$("#TA-NickName").val(profile.Info.NickName);
 	$("#TA-Name").val(profile.Info.Name);
-	$("#TA-WorkID").val(profile.Id.WorkID);
+	$("#TA-WorkID").val(profile.UserID);
 	$("#TA-CardID").val(profile.Id.CardID);
 	$("#TA-Email").val(profile.Id.Email);
 	$("#TA-Phone").val(profile.Id.Phone);
@@ -787,9 +543,9 @@ function genTAProfile() {
 		"UserID" : $("#TA-ID").val(),
 		"Courses" : TA_manageList,
 		"Id" : {
-			"WorkID" : $("#TA-WorkID").val() ,
-			"CardID" : $("#TA-CardID").val() ,
-			"Email" :  $("#TA-Email").val() ,
+			"WorkID" : $("#TA-WorkID").val(),
+			"CardID" : $("#TA-CardID").val(),
+			"Email" :  $("#TA-Email").val(),
 			"Phone" :  $("#TA-Phone").val()
 		} ,
 		"Education" : {
@@ -802,11 +558,11 @@ function genTAProfile() {
 		} ,
 		"Info" : {
 			"NickName" : $("#TA-NickName").val() ,
-			"Name" : $("#TA-Name").val ,
+			"Name" : $("#TA-Name").val(),
 			"Education" : []
 		}
 	};
-	return profile;
+	return JSON.stringify(profile);
 }
 
 function genCourdata() {
@@ -825,12 +581,12 @@ function genCourdata() {
 		chapters.push(chap);
 	}
 	var teacher=[];
-	for (var i = 0; i < $(".NC-Teacher"); i++) {
+	for (var i = 0; i < $(".NC-Teacher").length; i++) {
 		teacher.push($(".NC-Teacher").eq(i).val());
 	}
 	var TA=[];
-	for (var i = 0; i < $(".NC-TAS"); i++) {
-		teacher.push($(".NC-TAS").eq(i).val());
+	for (var i = 0; i < $(".NC-TAS").length; i++) {
+		TA.push($(".NC-TAS").eq(i).val());
 	}
 	var Room = {
 		"Campus": $("#NC-Loca").val(),
@@ -854,16 +610,16 @@ function genCourdata() {
 			]},
 		"Teachers" : teacher,
 		"TAs"      : TA,
-		"Students" : [],
+		"Students" : memberList,
 		"Chapters" : chapters
 	};
-	return newCourse;
+	return JSON.stringify(newCourse);
 }
 
 
 function queryData() {
-	// TA_manageListDetail = [];
-	for(var i = 0; i < TA_manageList; i++) {
+	TA_manageListDetail = [];
+	for(var i = 0; i < TA_manageList.length; i++) {
 		$.ajax(
 			{
 				url: 	 addr,
@@ -893,6 +649,7 @@ function queryData() {
 				"Action": 	  "LISTQ",
 				"UserID":     _auth["UserID"],
 				"Password":   _auth["Password"],
+				"Type" :      "Inform",
 				"CourseID":   _courseID
 			},
 			success:  function(result) {
