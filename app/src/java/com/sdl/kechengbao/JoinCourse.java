@@ -12,7 +12,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-
+/**
+*@author lincanye
+*/
 public class JoinCourse extends Activity {
 	private String courceID;
 	private String userId, password;
@@ -63,9 +65,8 @@ public class JoinCourse extends Activity {
 		super.onCreate(savedInstanceState);
 		userId = "12330285";
 		password = "12330";
-		//Bundle mBundle = this.getIntent().getExtras();
-		//courceID = mBundle.getString("Course");
-		courceID = "00000001";
+		Bundle mBundle = this.getIntent().getExtras();
+		courceID = mBundle.getString("Course");
 		queryData();		
 	}
 }
