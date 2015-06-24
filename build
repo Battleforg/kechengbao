@@ -1,0 +1,15 @@
+#!/bin/bash
+
+export GOBIN=${PWD}/bin
+export GOPATH=${PWD}/gopath
+
+go get gopkg.in/redis.v3 || exit 255
+go get gopkg.in/mgo.v2 || exit 255
+go get github.com/lib/pq || exit 255
+
+if [ ! -h gopath/src/server ]; then
+	mkdir -p gopath/src
+	ln -s ../../server gopath/src || exit 255
+fi
+
+go build -o ${GOBIN}/server server
