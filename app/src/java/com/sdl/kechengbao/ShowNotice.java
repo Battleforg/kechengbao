@@ -36,6 +36,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+/**
+*@author lincanye
+*/
 public class ShowNotice extends Activity {
 	private List<Map<String, String>> mDataList = new ArrayList<Map<String, String>>();
 	private ListView lv;
