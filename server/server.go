@@ -21,8 +21,8 @@ const (
 )
 
 var (
-	db   = NewUserDB("postgres", "course", "courseadmin", "userinfo")
-	cbdb = NewCBDB("postgres", "course", "courseadmin", "courseinfo")
+	db   = NewUserDB("sqlite3", "course", "courseadmin", "userinfo")
+	cbdb = NewCBDB("sqlite3", "course", "courseadmin", "courseinfo")
 )
 
 type MainServer struct {
@@ -87,6 +87,7 @@ func apiHandler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			var t Profile
 			t.UserID = uid
+			t.Courses = []string{"12345"}
 			CreateProfile(t)
 			db.Insert(uid, passwd)
 			w.WriteHeader(SUCCESS)
@@ -196,14 +197,16 @@ func main() {
 	log.Println(time.Now().Local().String())
 
 	db.Init()
+	db.DB.InitTable()
 	db.Cache()
 	cbdb.Init()
+	cbdb.DB.InitTable()
 	cbdb.Cache()
 	log.Println(db.Users)
 	http.HandleFunc("/api", apiHandler)
-	http.HandleFunc("/", sayhelloName)
 	http.HandleFunc("/deploy", deploy)
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(ROOT_DIR))))
+	http.HandleFunc("/dev", sayhelloName)
+	http.Handle("/", http.StripPrefix("/", http.FileServer(http.Dir(ROOT_DIR))))
 
 	err := http.ListenAndServe(":8080", nil)
 	HandleFatal(err)

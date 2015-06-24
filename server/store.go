@@ -2,8 +2,7 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
-	_ "github.com/lib/pq"
+	_ "github.com/mattn/go-sqlite3"
 	"log"
 	"sync"
 )
@@ -20,12 +19,32 @@ type Database struct {
 type Fetch func(map[string]interface{}, *sql.Rows)
 
 func (d *Database) Connect() *sql.DB {
-	db, err := sql.Open(d.Backend, fmt.Sprintf("dbname=%s user=%s sslmode=disable", d.Name, d.UserName))
+	db, err := sql.Open(d.Backend, "./user.db")
 	if err != nil {
 		log.Fatal(err)
 		return nil
 	}
 	return db
+}
+
+func (d *Database) InitTable() {
+	db := d.Connect()
+	defer db.Close()
+	sqlStmt := `
+	create table courseinfo (cid text, qno integer);
+	`
+	_, err := db.Exec(sqlStmt)
+	if err != nil {
+		log.Println(err)
+	}
+
+	sqlStmt = `
+		create table userinfo (userid text, password text);
+	`
+	_, err = db.Exec(sqlStmt)
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func NewDB(backend, dbname, user, table string) *Database {
